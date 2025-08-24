@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useProgram } from "../hooks/useProgram";
 import { useTimer } from "../hooks/useTimer";
 import { mmss } from "../utils/time";
@@ -22,8 +22,7 @@ export default function Timer() {
   const { getDayByIndex, markDone } = useProgram();
   const day = getDayByIndex(w, d);
 
-  // Build sequence: for each round, iterate all exercises (work), then rest after each except last in round.
-  // Keep your original timing logic, but include the exercise description for WORK segments.
+  // Build sequence (same logic as before, but include description for WORK)
   const sequence = useMemo<Segment[]>(() => {
     const segs: Segment[] = [];
     for (let r = 0; r < day.rounds; r++) {
@@ -64,10 +63,10 @@ export default function Timer() {
 
   const phaseBg = isWork ? "bg-green-50" : "bg-amber-50";
   const phasePill =
-    "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium " +
+    "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium " +
     (isWork
-      ? "text-green-800 bg-green-100 border border-green-200"
-      : "text-amber-800 bg-amber-100 border border-amber-200");
+      ? "text-green-800 bg-green-100 border-green-200"
+      : "text-amber-800 bg-amber-100 border-amber-200");
 
   function skip() {
     setIdx((i) => Math.min(i + 1, sequence.length - 1));
@@ -83,77 +82,76 @@ export default function Timer() {
   async function finish() {
     await markDone(w, day.title);
     (navigator as any).vibrate?.(15);
-    navigate("/"); // go back home after marking done
+    navigate("/"); // go home after completion
   }
 
   return (
     <main
-      className={`min-h-[calc(100vh-56px)] ${phaseBg} flex flex-col`}
+      className={`min-h-[calc(100vh-56px)] flex flex-col transition-colors duration-300 ${phaseBg}`}
       onClick={() => (running ? pause() : start())} // tap anywhere to toggle
     >
-      {/* Header info: ONLY current exercise name & description above timer */}
+      {/* Header / exercise focus */}
       <div className="mx-auto w-full max-w-screen-md px-4 pt-4">
         <span className={phasePill}>{isWork ? "WORK" : "REST"}</span>
 
-        <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+        <h2 className="mt-2 text-center text-2xl font-semibold text-gray-900">
           {currentName}
         </h2>
-        {currentDesc && (
-          <p className="mt-1 text-base text-gray-700">{currentDesc}</p>
-        )}
 
-        {/* Small meta line remains helpful (segment count) */}
-        <p className="mt-2 text-sm text-gray-600">
-          Segment {idx + 1}/{sequence.length}
-        </p>
+        {currentDesc && (
+          <p className="mx-auto mt-1 max-w-prose text-center text-[15px] leading-6 text-gray-700">
+            {currentDesc}
+          </p>
+        )}
       </div>
 
       {/* Big timer */}
       <div className="flex flex-1 items-center justify-center px-4">
-        <div className="select-none tabular-nums text-[20vw] leading-none font-semibold text-gray-900">
+        <div className="select-none tabular-nums text-[22vw] leading-none font-semibold text-gray-900">
           {mmss(remaining)}
         </div>
       </div>
 
-      {/* Segmented progress (uses your existing ProgressBar) */}
+      {/* Progress + segment info */}
       <div className="mx-auto w-full max-w-screen-md px-4">
         <ProgressBar value={totalElapsed} max={total} />
+        <div className="mt-2 text-center text-sm text-gray-600">
+          Segment {idx + 1}/{sequence.length}
+        </div>
       </div>
 
-      {/* Controls */}
-      <div className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-2 gap-3"
-           onClick={(e) => e.stopPropagation()} // prevent tap-to-toggle when pressing buttons
+      {/* Controls tray */}
+      <div
+        className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-1 gap-3"
+        onClick={(e) => e.stopPropagation()} // don't toggle timer when pressing buttons
       >
+        {/* Primary control */}
         {running ? (
-          <BigButton className="col-span-2" onClick={pause}>
+          <BigButton className="w-full" onClick={pause}>
             Pause
           </BigButton>
         ) : (
-          <BigButton className="col-span-2" onClick={start}>
+          <BigButton className="w-full" onClick={start}>
             Start
           </BigButton>
         )}
 
-        <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
-        <BigButton onClick={skip}>Skip</BigButton>
-
-        <BigButton className="col-span-2" onClick={restartDay}>
-          Restart
-        </BigButton>
-
-        <div className="col-span-2 mt-2 flex items-center gap-4">
-          <Link to={`/day/${w}/${d}`} className="text-brand hover:underline">
-            Back
-          </Link>
-
-          {/* Show Mark Done only when the very last segment just finished */}
-          {idx === sequence.length - 1 && remaining === 0 && (
-            <BigButton onClick={finish}>Mark Done</BigButton>
-          )}
+        {/* Secondary row */}
+        <div className="grid grid-cols-3 gap-3">
+          <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
+          <BigButton onClick={skip}>Skip</BigButton>
+          <BigButton onClick={restartDay}>Restart</BigButton>
         </div>
+
+        {/* Completion action: only when final segment has finished */}
+        {idx === sequence.length - 1 && remaining === 0 && (
+          <BigButton className="w-full" onClick={finish}>
+            Mark Done
+          </BigButton>
+        )}
       </div>
 
-      {/* Screen reader announcements */}
+      {/* A11y announcements */}
       <div aria-live="polite" className="sr-only">
         {isWork ? "Work" : "Rest"} {mmss(remaining)}.
       </div>
