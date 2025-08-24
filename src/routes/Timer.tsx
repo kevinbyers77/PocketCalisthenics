@@ -23,7 +23,7 @@ export default function Timer() {
   const { getDayByIndex, markDone } = useProgram();
   const day = getDayByIndex(w, d);
 
-  // Build the [work, rest] × rounds sequence, with exercise name + description for work segments
+  // Build [work, rest] × rounds, including name/desc for work segments
   const sequence = useMemo<Segment[]>(() => {
     const segs: Segment[] = [];
     for (let r = 0; r < day.rounds; r++) {
@@ -44,7 +44,7 @@ export default function Timer() {
   const [idx, setIdx] = useState(0);
   const seg = sequence[idx];
 
-  // After a segment completes, move to the next and auto-start it
+  // Flag to auto-start the next segment after onDone fires
   const autoStartNextRef = useRef(false);
 
   const { remaining, running, start, pause, reset } = useTimer(
@@ -56,15 +56,16 @@ export default function Timer() {
     }
   );
 
-  // IMPORTANT: reset on *every* segment change (idx), not only when duration changes.
+  // Reset on EVERY segment change (important when two segments have same seconds)
   useEffect(() => {
     reset(seg.seconds);
     if (autoStartNextRef.current) {
       start();
       autoStartNextRef.current = false;
     }
-  }, [idx]); // <— this is the key change
+  }, [idx]); // ← key fix
 
+  // Overall progress (for your horizontal bar)
   const totalElapsed =
     sequence.slice(0, idx).reduce((a, s) => a + s.seconds, 0) +
     (seg.seconds - remaining);
@@ -75,6 +76,16 @@ export default function Timer() {
   const currentDesc =
     seg.exerciseDesc ?? (isWork ? "" : "Breathe, shake out, and get ready.");
 
+  // Find the next WORK exercise (for REST “Up next” panel)
+  const nextWork = useMemo(() => {
+    for (let i = idx + 1; i < sequence.length; i++) {
+      const s = sequence[i];
+      if (s.kind === "work") return { name: s.exerciseName, desc: s.exerciseDesc };
+    }
+    return null;
+  }, [idx, sequence]);
+
+  // Styling tokens
   const phaseBg = isWork ? "bg-green-50" : "bg-amber-50";
   const phasePill =
     "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium " +
@@ -86,22 +97,23 @@ export default function Timer() {
     setIdx(i => Math.min(i + 1, sequence.length - 1));
     pause();
   }
-
   function restartDay() {
     setIdx(0);
     pause();
     reset(sequence[0].seconds);
   }
-
   async function finish() {
     await markDone(w, day.title);
     (navigator as any).vibrate?.(15);
-    navigate("/"); // go home after completion
+    navigate("/");
   }
 
   return (
-    <main className={`min-h-[calc(100vh-56px)] flex flex-col transition-colors duration-300 ${phaseBg}`}>
-      {/* Header / exercise focus */}
+    <main
+      className={`${phaseBg} min-h-[calc(100vh-56px)] grid transition-colors duration-300`}
+      style={{ gridTemplateRows: "auto 1fr auto" }}
+    >
+      {/* Row 1: header (can grow freely, no clipping) */}
       <div className="mx-auto w-full max-w-screen-md px-4 pt-4">
         <span className={phasePill}>{isWork ? "WORK" : "REST"}</span>
 
@@ -116,46 +128,66 @@ export default function Timer() {
         )}
       </div>
 
-      {/* Big timer (circular countdown) */}
-      <div className="flex flex-1 items-center justify-center px-4">
-        <CircularTimer
-          remaining={remaining}
-          total={seg.seconds}
-          phase={isWork ? "work" : "rest"}
-          size={240}
-        />
+      {/* Row 2: timer (stays centered vertically within this row) */}
+      <div className="flex items-center justify-center px-4">
+        <div className="flex flex-col items-center gap-3 w-full max-w-screen-md">
+          <CircularTimer
+            remaining={remaining}
+            total={seg.seconds}
+            phase={isWork ? "work" : "rest"}
+            size={240}
+          />
+
+          {/* Up next (only during REST, if another work segment exists) */}
+          {!isWork && nextWork && (
+            <div className="mt-1 w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 shadow-sm">
+              <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                Up next
+              </div>
+              <div className="mt-0.5 text-sm font-medium text-gray-900">
+                {nextWork.name}
+              </div>
+              {nextWork.desc && (
+                <div className="mt-0.5 text-sm text-gray-600">
+                  {nextWork.desc}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Progress + segment info */}
-      <div className="mx-auto w-full max-w-screen-md px-4">
+      {/* Row 3: progress + controls */}
+      <div className="mx-auto w-full max-w-screen-md px-4 pb-4">
+        {/* Overall progress + segment count */}
         <ProgressBar value={totalElapsed} max={total} />
         <div className="mt-2 text-center text-sm text-gray-600">
           Segment {idx + 1}/{sequence.length}
         </div>
-      </div>
 
-      {/* Controls */}
-      <div className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-1 gap-3">
-        {running ? (
-          <BigButton className="w-full" onClick={pause}>Pause</BigButton>
-        ) : (
-          <BigButton className="w-full" onClick={start}>Start</BigButton>
-        )}
+        {/* Controls */}
+        <div className="mt-3 grid grid-cols-1 gap-3">
+          {running ? (
+            <BigButton className="w-full" onClick={pause}>Pause</BigButton>
+          ) : (
+            <BigButton className="w-full" onClick={start}>Start</BigButton>
+          )}
 
-        <div className="grid grid-cols-3 gap-3">
-          <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
-          <BigButton onClick={skip}>Skip</BigButton>
-          <BigButton onClick={restartDay}>Restart</BigButton>
+          <div className="grid grid-cols-3 gap-3">
+            <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
+            <BigButton onClick={skip}>Skip</BigButton>
+            <BigButton onClick={restartDay}>Restart</BigButton>
+          </div>
+
+          {idx === sequence.length - 1 && remaining === 0 && (
+            <BigButton className="w-full" onClick={finish}>
+              Mark Done
+            </BigButton>
+          )}
         </div>
-
-        {idx === sequence.length - 1 && remaining === 0 && (
-          <BigButton className="w-full" onClick={finish}>
-            Mark Done
-          </BigButton>
-        )}
       </div>
 
-      {/* A11y announcements */}
+      {/* SR live region */}
       <div aria-live="polite" className="sr-only">
         {isWork ? "Work" : "Rest"} {mmss(remaining)}.
       </div>
