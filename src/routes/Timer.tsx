@@ -5,6 +5,7 @@ import { useTimer } from "../hooks/useTimer";
 import { mmss } from "../utils/time";
 import ProgressBar from "../components/ProgressBar";
 import BigButton from "../components/BigButton";
+import CircularTimer from "../components/CircularTimer";
 
 type Segment = {
   kind: "work" | "rest";
@@ -116,13 +117,16 @@ export default function Timer() {
         )}
       </div>
 
-      {/* Big timer */}
-      <div className="flex flex-1 items-center justify-center px-4">
-        <div className="select-none tabular-nums text-[22vw] leading-none font-semibold text-gray-900">
-          {mmss(remaining)}
-        </div>
-      </div>
-
+    // Big timer (replace the old text-only timer)
+<div className="flex flex-1 items-center justify-center px-4">
+  <CircularTimer
+    remaining={remaining}
+    total={seg.seconds}
+    phase={isWork ? "work" : "rest"}
+    size={240} // tweak if you want larger/smaller
+  />
+</div>
+      
       {/* Progress + segment info */}
       <div className="mx-auto w-full max-w-screen-md px-4">
         <ProgressBar value={totalElapsed} max={total} />
