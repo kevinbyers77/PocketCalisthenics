@@ -3,11 +3,17 @@ import Home from "./routes/Home";
 import Day from "./routes/Day";
 import Timer from "./routes/Timer";
 import InstallPWA from "./components/InstallPWA";
+import IOSInstallHint from "./components/IOSInstallHint";
+
 
 export default function App() {
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", padding: 16, maxWidth: 720, margin: "0 auto" }}>
-       <InstallPWA />
+
+      {/* Install banners */}
+      <InstallPWA />
+      <IOSInstallHint />
+
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <h1 style={{ fontSize: 24, margin: 0 }}>
           <Link to="/" style={{ textDecoration: "none" }}>Pocket Calisthenics</Link>
