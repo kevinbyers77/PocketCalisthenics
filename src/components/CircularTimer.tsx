@@ -5,7 +5,7 @@ import { mmss } from "../utils/time";
 type Props = {
   remaining: number;
   total: number;
-  size?: number;        // outer square in px
+  size?: number;        // px
   strokeWidth?: number; // ring thickness
   phase?: "work" | "rest";
 };
@@ -17,20 +17,26 @@ export default function CircularTimer({
   strokeWidth = 14,
   phase = "work",
 }: Props) {
-  // Ring geometry
+  // Geometry
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  // Progress = elapsed / total (so the arc grows from 0 to full)
+  // Per-current-segment progress (0..1)
   const elapsed = Math.max(0, Math.min(total, total - remaining));
-  const progress = total > 0 ? elapsed / total : 0;
+  const segProgress = total > 0 ? elapsed / total : 0;
 
-  // How much of the ring is hidden
-  const dashOffset = circumference * (1 - progress);
+  // Colors
+  const blue = "#2563eb";      // work arc
+  const grayTrack = "#e5e7eb"; // background track
+  const restGray = "#9ca3af";  // rest arc
 
-  const ringColor =
-    phase === "work" ? "#2563eb" /* blue-600 */ : "#f59e0b" /* amber-500 */;
-  const trackColor = "#e5e7eb"; // gray-200
+  // Frozen work progress: during WORK use segProgress; during REST clamp to 1
+  const workProgress = phase === "work" ? segProgress : 1;
+  const workDashOffset = circumference * (1 - workProgress);
+
+  // REST progress: only animate during REST; zero elsewhere
+  const restProgress = phase === "rest" ? segProgress : 0;
+  const restDashOffset = circumference * (1 - restProgress);
 
   return (
     <div
@@ -41,41 +47,49 @@ export default function CircularTimer({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        preserveAspectRatio="xMidYMid meet"
         className="absolute top-0 left-0"
-        // Start stroke at 12 o’clock
-        style={{ transform: "rotate(-90deg)" }}
+        style={{ transform: "rotate(-90deg)" }} // start at 12 o'clock
       >
-        {/* Track */}
+        {/* Background track */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="transparent"
-          stroke={trackColor}
+          stroke={grayTrack}
           strokeWidth={strokeWidth}
         />
 
-        {/* Progress */}
+        {/* Frozen WORK arc (blue). During REST this stays at full circle. */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="transparent"
-          stroke={ringColor}
+          stroke={blue}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={dashOffset}
-          // Smooth between second ticks
-          style={{
-            transition: "stroke-dashoffset 1s linear",
-            willChange: "stroke-dashoffset",
-          }}
+          strokeDasharray={`${circumference} ${circumference}`}
+          strokeDashoffset={workDashOffset}
+          style={{ transition: "stroke-dashoffset 1s linear" }}
+        />
+
+        {/* REST arc (gray). Only animates during REST. */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke={restGray}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={`${circumference} ${circumference}`}
+          strokeDashoffset={restDashOffset}
+          style={{ transition: "stroke-dashoffset 1s linear" }}
         />
       </svg>
 
-      {/* Time overlay */}
+      {/* Time text overlay */}
       <div
         className="select-none tabular-nums font-semibold text-gray-900"
         style={{ fontSize: size * 0.22 }}
