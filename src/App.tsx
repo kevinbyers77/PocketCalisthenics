@@ -2,6 +2,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Home from "./routes/Home";
 import Day from "./routes/Day";
 import Timer from "./routes/Timer";
+import InstallPWA from "./components/InstallPWA";
 
 export default function App() {
   return (
