@@ -1,0 +1,168 @@
+Workout app - routine JSON
+
+{
+  "program_name": "12-Week Progressive Calisthenics Plan",
+  "session_notes": "Warm-up ~1 min, circuit as specified, cool-down 1–2 min. Modify any move for comfort.",
+  "rest_days_per_week": 2,
+  "weeks": [
+    {
+      "week": 1,
+      "work_sec": 30,
+      "rest_sec": 30,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["march_in_place","chair_squat","wall_pushup","standing_knee_lifts","glute_bridge"],
+        "Day 2 - Core & Balance": ["side_bends","seated_knee_lifts","bird_dog","side_step_reach","plank_wall"],
+        "Day 3 - Cardio & Legs": ["march_in_place","side_steps_arms","chair_squat","heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","wall_pushup","shoulder_blade_squeeze","overhead_reach","standing_w_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_circles","chest_opener","forward_fold"]
+      }
+    },
+    {
+      "week": 2,
+      "work_sec": 30,
+      "rest_sec": 30,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["step_jacks","reverse_lunge_stepback","incline_pushup_counter","side_steps_arms","glute_bridge_hold"],
+        "Day 2 - Core & Balance": ["standing_oblique_crunch","seated_knee_lifts_arms","dead_bug","side_step_diagonal_reach","plank_shoulder_taps"],
+        "Day 3 - Cardio & Legs": ["high_knee_march","step_touch_clap","mini_lunge","toe_taps_front","jog_in_place"],
+        "Day 4 - Upper Body & Posture": ["arm_swings","incline_pushup_counter","reverse_fly_arms","overhead_reach_pulses","wall_angels"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","doorway_chest_stretch","forward_fold"]
+      }
+    },
+    {
+      "week": 3,
+      "work_sec": 30,
+      "rest_sec": 30,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["jog_in_place","squat_pulse","knee_pushup_floor","standing_oblique_crunch","glute_bridge_alt_leg"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_twists","bird_dog_pulse","side_step_reach","plank_counter"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","grapevine_low","wall_sit","single_leg_heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","incline_pushup_counter","scap_wall_slides","overhead_reach_sidebend","standing_y_arms"],
+        "Day 5 - Mobility Flow": ["march_in_place","cat_cow","hip_circles","doorway_chest_stretch","forward_fold"]
+      }
+    },
+
+    {
+      "week": 4,
+      "work_sec": 40,
+      "rest_sec": 20,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["high_knee_march","bodyweight_squat","incline_pushup_counter","standing_knee_twist","glute_bridge_hold"],
+        "Day 2 - Core & Balance": ["standing_oblique_crunch","seated_double_knee","bird_dog","side_step_diagonal_reach","plank_counter"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","side_steps_arms","chair_squat","heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_swings","incline_pushup_counter","shoulder_blade_squeeze","overhead_reach_pulses","standing_w_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","chest_opener","forward_fold"]
+      }
+    },
+    {
+      "week": 5,
+      "work_sec": 40,
+      "rest_sec": 20,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["step_jacks","reverse_lunge_stepback","knee_pushup_floor","side_steps_arms","glute_bridge_march"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_knee_lifts_arms","dead_bug","side_step_reach","plank_shoulder_taps"],
+        "Day 3 - Cardio & Legs": ["high_knee_march","step_touch_clap","bodyweight_squat","single_leg_heel_raise","jog_in_place"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","incline_pushup_counter","reverse_fly_arms","overhead_reach_sidebend","wall_angels"],
+        "Day 5 - Mobility Flow": ["march_in_place","cat_cow","hip_circles","doorway_chest_stretch","forward_fold"]
+      }
+    },
+    {
+      "week": 6,
+      "work_sec": 40,
+      "rest_sec": 20,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["jog_in_place","bodyweight_squat","pushup_counter_or_floor","standing_knee_twist","glute_bridge_alt_leg"],
+        "Day 2 - Core & Balance": ["side_bends","seated_twists","bird_dog_pulse","side_step_diagonal_reach","plank_counter"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","grapevine_low","wall_sit","heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","pushup_counter_or_floor","scap_wall_slides","overhead_reach_pulses","standing_y_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","chest_opener","forward_fold"]
+      }
+    },
+
+    {
+      "week": 7,
+      "work_sec": 45,
+      "rest_sec": 15,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["jog_in_place","bodyweight_squat","incline_pushup_counter","standing_knee_twist","glute_bridge_march"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_double_knee","dead_bug","side_step_reach","plank_counter"],
+        "Day 3 - Cardio & Legs": ["high_knee_march","side_steps_arms","reverse_lunge_stepback","single_leg_heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_swings","pushup_counter_or_floor","reverse_fly_arms","overhead_reach_sidebend","standing_w_arms"],
+        "Day 5 - Mobility Flow": ["march_in_place","cat_cow","hip_circles","doorway_chest_stretch","forward_fold"]
+      }
+    },
+    {
+      "week": 8,
+      "work_sec": 45,
+      "rest_sec": 15,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["step_jacks","bodyweight_squat","pushup_counter_or_floor","standing_oblique_crunch","glute_bridge_alt_leg"],
+        "Day 2 - Core & Balance": ["side_bends","seated_knee_lifts_arms","bird_dog_pulse","side_step_diagonal_reach","plank_shoulder_taps"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","step_touch_clap","mini_lunge","heel_raise","jog_in_place"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","pushup_counter_or_floor","scap_wall_slides","overhead_reach_pulses","standing_y_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","chest_opener","forward_fold"]
+      }
+    },
+    {
+      "week": 9,
+      "work_sec": 45,
+      "rest_sec": 15,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["jog_in_place","squat_pulse","pushup_counter_or_floor","standing_knee_twist","glute_bridge_march"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_twists","dead_bug","side_step_reach","plank_floor"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","grapevine_low","wall_sit","single_leg_heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_swings","pushup_counter_or_floor","reverse_fly_arms","overhead_reach_sidebend","wall_angels"],
+        "Day 5 - Mobility Flow": ["march_in_place","cat_cow","hip_circles","doorway_chest_stretch","forward_fold"]
+      }
+    },
+
+    {
+      "week": 10,
+      "work_sec": 50,
+      "rest_sec": 10,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["high_knee_march","bodyweight_squat","pushup_counter_or_floor","standing_oblique_crunch","glute_bridge_march"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_double_knee","bird_dog_pulse","side_step_diagonal_reach","plank_floor"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","side_steps_arms","reverse_lunge_stepback","single_leg_heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","pushup_counter_or_floor","scap_wall_slides","overhead_reach_pulses","standing_y_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","chest_opener","forward_fold"]
+      }
+    },
+    {
+      "week": 11,
+      "work_sec": 50,
+      "rest_sec": 10,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["step_jacks","bodyweight_squat","pushup_counter_or_floor","standing_knee_twist","glute_bridge_alt_leg"],
+        "Day 2 - Core & Balance": ["side_bends","seated_knee_lifts_arms","dead_bug","side_step_reach","plank_floor"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","step_touch_clap","bodyweight_squat","heel_raise","jog_in_place"],
+        "Day 4 - Upper Body & Posture": ["arm_swings","pushup_counter_or_floor","reverse_fly_arms","overhead_reach_sidebend","standing_w_arms"],
+        "Day 5 - Mobility Flow": ["march_in_place","cat_cow","hip_circles","doorway_chest_stretch","forward_fold"]
+      }
+    },
+    {
+      "week": 12,
+      "work_sec": 50,
+      "rest_sec": 10,
+      "rounds": 2,
+      "days": {
+        "Day 1 - Full Body": ["jog_in_place","bodyweight_squat","pushup_counter_or_floor","standing_oblique_crunch","glute_bridge_march"],
+        "Day 2 - Core & Balance": ["side_bends_weight","seated_double_knee","bird_dog_pulse","side_step_diagonal_reach","plank_floor"],
+        "Day 3 - Cardio & Legs": ["jog_in_place","grapevine_low","wall_sit","single_leg_heel_raise","boxer_shuffle"],
+        "Day 4 - Upper Body & Posture": ["arm_circles","pushup_counter_or_floor","scap_wall_slides","overhead_reach_pulses","standing_y_arms"],
+        "Day 5 - Mobility Flow": ["torso_twist_standing","cat_cow","hip_opener_stretch","chest_opener","forward_fold"]
+      }
+    }
+  ]
+}

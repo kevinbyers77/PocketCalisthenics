@@ -1,0 +1,83 @@
+Workout app- exercise library JSON
+
+{
+  "exercise_library": [
+    {"id": "march_in_place", "name": "March in Place", "description": "Lift one knee at a time while swinging arms naturally."},
+    {"id": "high_knee_march", "name": "High-Knee March", "description": "Drive knees higher to belly-button height while marching briskly."},
+    {"id": "jog_in_place", "name": "Jog in Place", "description": "Lightly jog without moving forward, landing softly."},
+    {"id": "step_jacks", "name": "Step Jacks", "description": "Step side to side raising arms overhead like low-impact jumping jacks."},
+    {"id": "side_steps_arms", "name": "Side Steps with Arm Swings", "description": "Step side to side while swinging arms forward and back."},
+    {"id": "grapevine_low", "name": "Grapevine (Low Impact)", "description": "Step behind and to the side in a crossing pattern at a gentle pace."},
+    {"id": "boxer_shuffle", "name": "Boxer Shuffle", "description": "Shift weight side to side with a light bounce on the balls of the feet."},
+
+    {"id": "chair_squat", "name": "Chair Squats", "description": "Sit back to a chair and stand up, keeping chest tall and knees tracking over toes."},
+    {"id": "bodyweight_squat", "name": "Bodyweight Squats", "description": "Lower hips back and down then stand, keeping heels grounded."},
+    {"id": "squat_pulse", "name": "Squat Pulses", "description": "Hold a shallow squat and pulse up and down a few inches."},
+    {"id": "wall_sit", "name": "Wall Sit", "description": "Slide back down a wall and hold a seated position with knees at 90° if comfortable."},
+    {"id": "reverse_lunge_stepback", "name": "Step-Back Lunges", "description": "Step one foot back and lower into a lunge, then return to stand."},
+    {"id": "mini_lunge", "name": "Mini Lunges", "description": "Perform shallow lunges focusing on balance and control."},
+
+    {"id": "heel_raise", "name": "Heel Raises", "description": "Lift heels to stand on toes, pause, then lower under control."},
+    {"id": "single_leg_heel_raise", "name": "Single-Leg Heel Raises", "description": "Stand on one foot and raise heel up and down slowly."},
+
+    {"id": "wall_pushup", "name": "Wall Push-Ups", "description": "Hands on wall, lower chest toward wall, then press away."},
+    {"id": "incline_pushup_counter", "name": "Incline Push-Ups (Counter)", "description": "Hands on a counter, keep body straight, lower and press up."},
+    {"id": "knee_pushup_floor", "name": "Knee Push-Ups (Floor)", "description": "From knees and hands on floor, lower chest then press up."},
+    {"id": "pushup_counter_or_floor", "name": "Push-Ups (Counter or Floor)", "description": "Perform push-ups on a counter or floor as strength allows."},
+
+    {"id": "glute_bridge", "name": "Glute Bridge", "description": "Lie on back, feet flat, lift hips until shoulders–hips–knees align."},
+    {"id": "glute_bridge_hold", "name": "Glute Bridge Hold", "description": "Hold the top of a glute bridge with hips high and core braced."},
+    {"id": "glute_bridge_march", "name": "Glute Bridge March", "description": "In bridge position, alternately lift one foot a few centimeters off the floor."},
+    {"id": "glute_bridge_alt_leg", "name": "Glute Bridge with Alternating Leg Lift", "description": "In bridge, extend one leg briefly then switch while keeping hips level."},
+
+    {"id": "standing_knee_lifts", "name": "Standing Knee Lifts", "description": "Lift one knee toward chest while standing tall."},
+    {"id": "standing_knee_twist", "name": "Standing Knee Lifts with Twist", "description": "Lift knee and rotate torso toward it for an oblique squeeze."},
+    {"id": "standing_oblique_crunch", "name": "Standing Oblique Crunches", "description": "Bring elbow toward same-side knee to work the sides of the core."},
+
+    {"id": "side_bends", "name": "Side Bends", "description": "Slide one hand down the thigh while leaning sideways, then switch."},
+    {"id": "side_bends_weight", "name": "Side Bends (Light Weight)", "description": "Hold a light object and bend sideways, keeping ribs down."},
+
+    {"id": "seated_knee_lifts", "name": "Seated Knee Lifts", "description": "Sit tall at chair edge and lift one or both knees toward chest."},
+    {"id": "seated_knee_lifts_arms", "name": "Seated Knee Lifts + Arm Raise", "description": "Lift knees while raising opposite arm overhead alternately."},
+    {"id": "seated_double_knee", "name": "Seated Double Knee Lift", "description": "Lift both knees together from a sturdy chair while bracing core."},
+    {"id": "seated_twists", "name": "Seated Twists", "description": "Rotate torso side to side while sitting upright."},
+
+    {"id": "dead_bug", "name": "Dead Bug", "description": "On back, extend opposite arm and leg slowly while keeping lower back down."},
+    {"id": "bird_dog", "name": "Bird Dog", "description": "On all fours, extend opposite arm and leg, pause, then switch."},
+    {"id": "bird_dog_pulse", "name": "Bird Dog with Pulse", "description": "In the extended bird-dog position, add a small controlled pulse before switching."},
+
+    {"id": "side_step_reach", "name": "Side Step + Reach", "description": "Step to the side and reach arms overhead, alternating sides."},
+    {"id": "side_step_diagonal_reach", "name": "Side Step + Diagonal Reach", "description": "Step sideways and reach one arm diagonally overhead across the body."},
+
+    {"id": "plank_wall", "name": "Wall Plank", "description": "Lean into a wall with straight body line and hold."},
+    {"id": "plank_counter", "name": "Counter Plank", "description": "Hands or forearms on a counter, body in straight line, hold."},
+    {"id": "plank_floor", "name": "Floor Plank", "description": "On forearms and toes or knees, hold a straight line from head to heels."},
+    {"id": "plank_shoulder_taps", "name": "Plank with Shoulder Taps", "description": "From plank, tap each shoulder with the opposite hand without rocking."},
+
+    {"id": "arm_circles", "name": "Arm Circles", "description": "Circle arms forward and backward at shoulder height."},
+    {"id": "arm_swings", "name": "Arm Swings", "description": "Swing arms forward and back while standing tall."},
+    {"id": "reverse_fly_arms", "name": "Reverse Fly Arms", "description": "With soft knees, sweep straight arms out and back to squeeze shoulder blades."},
+    {"id": "scap_wall_slides", "name": "Scapular Wall Slides", "description": "Back against a wall, slide arms up/down keeping elbows and wrists in contact."},
+    {"id": "wall_angels", "name": "Wall Angels", "description": "Press arms and back to wall and slowly trace a snow-angel motion."},
+    {"id": "shoulder_blade_squeeze", "name": "Shoulder Blade Squeezes", "description": "Pinch shoulder blades together for 2 seconds, then release."},
+    {"id": "standing_w_arms", "name": "Standing 'W' Arms", "description": "Form a 'W' with elbows bent and squeeze shoulder blades down and back."},
+    {"id": "standing_y_arms", "name": "Standing 'Y' Arms", "description": "Raise straight arms overhead into a 'Y' while keeping ribs down."},
+
+    {"id": "overhead_reach", "name": "Overhead Reaches", "description": "Reach both hands overhead as high as comfortable, then lower."},
+    {"id": "overhead_reach_pulses", "name": "Overhead Reach with Pulses", "description": "Hold arms overhead and make small controlled pulses upward."},
+    {"id": "overhead_reach_sidebend", "name": "Overhead Reach with Side Bend", "description": "Reach arms up and lean gently to each side for a stretch."},
+
+    {"id": "cat_cow", "name": "Cat-Cow", "description": "On all fours, alternate rounding and arching the back with breath."},
+    {"id": "hip_circles", "name": "Hip Circles", "description": "Hands on hips, draw smooth circles in both directions."},
+    {"id": "hip_opener_stretch", "name": "Hip Opener Stretch", "description": "From a staggered stance, gently shift hips forward to stretch the front of hip."},
+    {"id": "chest_opener", "name": "Chest Opener", "description": "Clasp hands behind back or use a wall to open the chest."},
+    {"id": "doorway_chest_stretch", "name": "Doorway Chest Opener", "description": "Forearms on doorframe, step through to stretch chest."},
+    {"id": "forward_fold", "name": "Forward Fold", "description": "With soft knees, hinge at hips and fold forward comfortably."},
+    {"id": "torso_twist_standing", "name": "Standing Torso Twist", "description": "Gently rotate torso left and right while standing tall."},
+    {"id": "toe_taps_front", "name": "Front Toe Taps", "description": "Tap toes alternately to a spot or low step in front of you."},
+    {"id": "step_touch_clap", "name": "Step Touch with Clap", "description": "Step side to side and clap hands lightly on each step."}
+  ]
+}
+
+
+
