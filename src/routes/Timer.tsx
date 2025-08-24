@@ -23,7 +23,7 @@ export default function Timer() {
   const { getDayByIndex, markDone } = useProgram();
   const day = getDayByIndex(w, d);
 
-  // Build [work, rest] × rounds, including name/desc for work segments
+  // Build the sequence: [work, rest] × rounds
   const sequence = useMemo<Segment[]>(() => {
     const segs: Segment[] = [];
     for (let r = 0; r < day.rounds; r++) {
@@ -34,8 +34,8 @@ export default function Timer() {
           exerciseName: ex.name,
           exerciseDesc: ex.description,
         });
-        const isLastOfAll = r === day.rounds - 1 && i === day.exercises.length - 1;
-        if (!isLastOfAll) segs.push({ kind: "rest", seconds: day.restSec });
+        const isLast = r === day.rounds - 1 && i === day.exercises.length - 1;
+        if (!isLast) segs.push({ kind: "rest", seconds: day.restSec });
       });
     }
     return segs;
@@ -44,28 +44,24 @@ export default function Timer() {
   const [idx, setIdx] = useState(0);
   const seg = sequence[idx];
 
-  // Flag to auto-start the next segment after onDone fires
+  // Auto-start next segment after onDone fires
   const autoStartNextRef = useRef(false);
+  const { remaining, running, start, pause, reset } = useTimer(seg.seconds, () => {
+    autoStartNextRef.current = true;
+    setIdx(i => Math.min(i + 1, sequence.length - 1));
+    if (navigator.vibrate) navigator.vibrate(150);
+  });
 
-  const { remaining, running, start, pause, reset } = useTimer(
-    seg.seconds,
-    () => {
-      autoStartNextRef.current = true;
-      setIdx(i => Math.min(i + 1, sequence.length - 1));
-      if (navigator.vibrate) navigator.vibrate(150);
-    }
-  );
-
-  // Reset on EVERY segment change (important when two segments have same seconds)
+  // IMPORTANT: reset when the segment index changes
   useEffect(() => {
     reset(seg.seconds);
     if (autoStartNextRef.current) {
       start();
       autoStartNextRef.current = false;
     }
-  }, [idx]); // ← key fix
+  }, [idx]); // ← keep it on idx to handle same-length segments
 
-  // Overall progress (for your horizontal bar)
+  // Overall progress
   const totalElapsed =
     sequence.slice(0, idx).reduce((a, s) => a + s.seconds, 0) +
     (seg.seconds - remaining);
@@ -76,18 +72,22 @@ export default function Timer() {
   const currentDesc =
     seg.exerciseDesc ?? (isWork ? "" : "Breathe, shake out, and get ready.");
 
-  // Find the next WORK exercise (for REST “Up next” panel)
+  // Next WORK card (for the second, smaller card)
   const nextWork = useMemo(() => {
     for (let i = idx + 1; i < sequence.length; i++) {
-      const s = sequence[i];
-      if (s.kind === "work") return { name: s.exerciseName, desc: s.exerciseDesc };
+      if (sequence[i].kind === "work") {
+        return {
+          name: sequence[i].exerciseName,
+          desc: sequence[i].exerciseDesc,
+        };
+      }
     }
     return null;
   }, [idx, sequence]);
 
-  // Styling tokens
+  // Visual tokens
   const phaseBg = isWork ? "bg-green-50" : "bg-amber-50";
-  const phasePill =
+  const pill =
     "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium " +
     (isWork
       ? "text-green-800 bg-green-100 border-green-200"
@@ -110,75 +110,78 @@ export default function Timer() {
 
   return (
     <main
-      className={`${phaseBg} min-h-[calc(100vh-56px)] grid transition-colors duration-300`}
-      style={{ gridTemplateRows: "auto 1fr auto" }}
+      className={`${phaseBg} min-h-[calc(100vh-56px)] grid`}
+      style={{ gridTemplateRows: "auto auto 1fr auto" }} // header | cards | timer | controls
     >
-      {/* Row 1: header (can grow freely, no clipping) */}
+      {/* Header */}
       <div className="mx-auto w-full max-w-screen-md px-4 pt-4">
-        <span className={phasePill}>{isWork ? "WORK" : "REST"}</span>
-
-        <h2 className="mt-2 text-center text-2xl font-semibold text-gray-900">
-          {currentName}
-        </h2>
-
-        {currentDesc && (
-          <p className="mx-auto mt-1 max-w-prose text-center text-[15px] leading-6 text-gray-700">
-            {currentDesc}
-          </p>
-        )}
+        <span className={pill}>{isWork ? "WORK" : "REST"}</span>
       </div>
 
-      {/* Row 2: timer (stays centered vertically within this row) */}
-      <div className="flex items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-3 w-full max-w-screen-md">
-          <CircularTimer
-            remaining={remaining}
-            total={seg.seconds}
-            phase={isWork ? "work" : "rest"}
-            size={240}
-          />
-
-          {/* Up next (only during REST, if another work segment exists) */}
-          {!isWork && nextWork && (
-            <div className="mt-1 w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 shadow-sm">
-              <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                Up next
-              </div>
-              <div className="mt-0.5 text-sm font-medium text-gray-900">
-                {nextWork.name}
-              </div>
-              {nextWork.desc && (
-                <div className="mt-0.5 text-sm text-gray-600">
-                  {nextWork.desc}
-                </div>
-              )}
+      {/* Two CARD STACK — always rendered to keep layout stable */}
+      <div className="mx-auto w-full max-w-screen-md px-4 mt-2 space-y-3">
+        {/* Current segment card (larger type) */}
+        <div className="rounded-xl border border-gray-200 bg-white/80 px-4 py-3 shadow-sm">
+          <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+            Current
+          </div>
+          <div className="mt-0.5 text-xl font-semibold text-gray-900">
+            {currentName}
+          </div>
+          {currentDesc && (
+            <div className="mt-0.5 text-[15px] text-gray-700 leading-6">
+              {currentDesc}
             </div>
           )}
         </div>
+
+        {/* Up next card (always present; if none, render a transparent placeholder of same height) */}
+        {nextWork ? (
+          <div className="rounded-xl border border-gray-200 bg-white/70 px-4 py-3 shadow-sm">
+            <div className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+              Up Next
+            </div>
+            <div className="mt-0.5 text-sm font-medium text-gray-900">
+              {nextWork.name}
+            </div>
+            {nextWork.desc && (
+              <div className="mt-0.5 text-sm text-gray-600">{nextWork.desc}</div>
+            )}
+          </div>
+        ) : (
+          // Placeholder with same vertical footprint to prevent any jump
+          <div className="rounded-xl border border-transparent px-4 py-3 opacity-0 select-none min-h-[84px]" />
+        )}
       </div>
 
-      {/* Row 3: progress + controls */}
+      {/* Timer row — stays centered vertically */}
+      <div className="flex items-center justify-center px-4">
+        <CircularTimer
+          remaining={remaining}
+          total={seg.seconds}
+          phase={isWork ? "work" : "rest"}
+          size={240}
+        />
+      </div>
+
+      {/* Progress + controls */}
       <div className="mx-auto w-full max-w-screen-md px-4 pb-4">
-        {/* Overall progress + segment count */}
         <ProgressBar value={totalElapsed} max={total} />
         <div className="mt-2 text-center text-sm text-gray-600">
           Segment {idx + 1}/{sequence.length}
         </div>
 
-        {/* Controls */}
         <div className="mt-3 grid grid-cols-1 gap-3">
           {running ? (
             <BigButton className="w-full" onClick={pause}>Pause</BigButton>
           ) : (
             <BigButton className="w-full" onClick={start}>Start</BigButton>
           )}
-
           <div className="grid grid-cols-3 gap-3">
             <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
             <BigButton onClick={skip}>Skip</BigButton>
             <BigButton onClick={restartDay}>Restart</BigButton>
           </div>
-
           {idx === sequence.length - 1 && remaining === 0 && (
             <BigButton className="w-full" onClick={finish}>
               Mark Done
@@ -187,7 +190,7 @@ export default function Timer() {
         </div>
       </div>
 
-      {/* SR live region */}
+      {/* Screen reader live region */}
       <div aria-live="polite" className="sr-only">
         {isWork ? "Work" : "Rest"} {mmss(remaining)}.
       </div>
