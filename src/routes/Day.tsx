@@ -1,30 +1,37 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useProgram } from "../hooks/useProgram";
 import BigButton from "../components/BigButton";
 
 export default function Day() {
   const params = useParams();
+  const navigate = useNavigate();
+
   const week = Number(params.week);
   const dayIndex = Number(params.dayIndex);
 
-  const { getDayByIndex, markDone } = useProgram();
+  const { getDayByIndex, markDone, unmarkDone, getDoneStamp } = useProgram();
   const day = getDayByIndex(week, dayIndex);
 
-  const [toast, setToast] = useState<string | null>(null);
+  const [isDone, setIsDone] = useState(false);
 
-  async function onMarkDone() {
-    try {
-      await markDone(week, day.title);
-      // subtle haptic, if supported
-      (navigator as any).vibrate?.(15);
-      setToast("Saved ✓");
-      window.setTimeout(() => setToast(null), 1600);
-    } catch (err) {
-      console.error(err);
-      setToast("Something went wrong");
-      window.setTimeout(() => setToast(null), 1800);
-    }
+  // Check if this day is already marked as done
+  useEffect(() => {
+    getDoneStamp(week, day.title).then((stamp) => {
+      setIsDone(!!stamp);
+    });
+  }, [week, day.title, getDoneStamp]);
+
+  async function handleMarkDone() {
+    await markDone(week, day.title);
+    (navigator as any).vibrate?.(15);
+    navigate("/"); // Go back home after marking
+  }
+
+  async function handleUnmarkDone() {
+    await unmarkDone(week, day.title);
+    (navigator as any).vibrate?.(15);
+    setIsDone(false); // stay on page, so they can re-mark if wanted
   }
 
   return (
@@ -62,23 +69,18 @@ export default function Day() {
           <BigButton>Start Workout</BigButton>
         </Link>
 
-        <BigButton onClick={onMarkDone}>Mark Done</BigButton>
+        {isDone ? (
+          <BigButton onClick={handleUnmarkDone} className="bg-red-600 hover:bg-red-700">
+            Unmark Done
+          </BigButton>
+        ) : (
+          <BigButton onClick={handleMarkDone}>Mark Done</BigButton>
+        )}
 
         <Link to="/" className="text-brand hover:underline justify-self-start">
           Back
         </Link>
       </div>
-
-      {/* Toast */}
-      {toast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-xl bg-emerald-600 px-4 py-2 text-white shadow-lg"
-        >
-          {toast}
-        </div>
-      )}
     </div>
   );
 }
