@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useProgram } from "../hooks/useProgram";
 import { useTimer } from "../hooks/useTimer";
@@ -22,7 +22,7 @@ export default function Timer() {
   const { getDayByIndex, markDone } = useProgram();
   const day = getDayByIndex(w, d);
 
-  // Build sequence (same logic as before, but include description for WORK)
+  // Build sequence (same logic as before, include description for WORK)
   const sequence = useMemo<Segment[]>(() => {
     const segs: Segment[] = [];
     for (let r = 0; r < day.rounds; r++) {
@@ -43,13 +43,27 @@ export default function Timer() {
   const [idx, setIdx] = useState(0);
   const seg = sequence[idx];
 
+  // When a segment completes, advance index and flag auto-start for the next one
+  const autoStartNextRef = useRef(false);
+
   const { remaining, running, start, pause, reset } = useTimer(
     seg.seconds,
     () => {
+      autoStartNextRef.current = true; // tell next segment to start automatically
       setIdx((i) => Math.min(i + 1, sequence.length - 1));
       if (navigator.vibrate) navigator.vibrate(150);
     }
   );
+
+  // Reset timer on segment change, and auto-start if the previous one just finished
+  useEffect(() => {
+    reset(seg.seconds);
+    if (autoStartNextRef.current) {
+      start();
+      autoStartNextRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seg.seconds]);
 
   const totalElapsed =
     sequence.slice(0, idx).reduce((a, s) => a + s.seconds, 0) +
@@ -86,10 +100,7 @@ export default function Timer() {
   }
 
   return (
-    <main
-      className={`min-h-[calc(100vh-56px)] flex flex-col transition-colors duration-300 ${phaseBg}`}
-      onClick={() => (running ? pause() : start())} // tap anywhere to toggle
-    >
+    <main className={`min-h-[calc(100vh-56px)] flex flex-col transition-colors duration-300 ${phaseBg}`}>
       {/* Header / exercise focus */}
       <div className="mx-auto w-full max-w-screen-md px-4 pt-4">
         <span className={phasePill}>{isWork ? "WORK" : "REST"}</span>
@@ -121,19 +132,12 @@ export default function Timer() {
       </div>
 
       {/* Controls tray */}
-      <div
-        className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-1 gap-3"
-        onClick={(e) => e.stopPropagation()} // don't toggle timer when pressing buttons
-      >
+      <div className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-1 gap-3">
         {/* Primary control */}
         {running ? (
-          <BigButton className="w-full" onClick={pause}>
-            Pause
-          </BigButton>
+          <BigButton className="w-full" onClick={pause}>Pause</BigButton>
         ) : (
-          <BigButton className="w-full" onClick={start}>
-            Start
-          </BigButton>
+          <BigButton className="w-full" onClick={start}>Start</BigButton>
         )}
 
         {/* Secondary row */}
