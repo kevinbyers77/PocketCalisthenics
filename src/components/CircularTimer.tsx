@@ -21,11 +21,11 @@ export default function CircularTimer({
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  // Show elapsed progress (so the arc grows from 0 to full)
+  // Progress = elapsed / total (so the arc grows from 0 to full)
   const elapsed = Math.max(0, Math.min(total, total - remaining));
   const progress = total > 0 ? elapsed / total : 0;
 
-  // Dash offset: how much of the ring is hidden
+  // How much of the ring is hidden
   const dashOffset = circumference * (1 - progress);
 
   const ringColor =
@@ -41,11 +41,12 @@ export default function CircularTimer({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
+        preserveAspectRatio="xMidYMid meet"
         className="absolute top-0 left-0"
-        // rotate to start the stroke at 12 o'clock
+        // Start stroke at 12 o’clock
         style={{ transform: "rotate(-90deg)" }}
       >
-        {/* Background track */}
+        {/* Track */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -55,7 +56,7 @@ export default function CircularTimer({
           strokeWidth={strokeWidth}
         />
 
-        {/* Progress arc */}
+        {/* Progress */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -64,15 +65,21 @@ export default function CircularTimer({
           stroke={ringColor}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-          strokeDasharray={`${circumference} ${circumference}`}
+          strokeDasharray={circumference}
           strokeDashoffset={dashOffset}
-          style={{ transition: "stroke-dashoffset 0.3s linear" }}
+          // Smooth between second ticks
+          style={{
+            transition: "stroke-dashoffset 1s linear",
+            willChange: "stroke-dashoffset",
+          }}
         />
       </svg>
 
-      {/* Time text overlay */}
-      <div className="select-none tabular-nums font-semibold text-gray-900"
-           style={{ fontSize: size * 0.22 }}>
+      {/* Time overlay */}
+      <div
+        className="select-none tabular-nums font-semibold text-gray-900"
+        style={{ fontSize: size * 0.22 }}
+      >
         {mmss(remaining)}
       </div>
     </div>
