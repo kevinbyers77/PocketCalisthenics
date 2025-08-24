@@ -23,7 +23,7 @@ export default function Timer() {
   const { getDayByIndex, markDone } = useProgram();
   const day = getDayByIndex(w, d);
 
-  // Build sequence (same logic as before, include description for WORK)
+  // Build the [work, rest] × rounds sequence, with exercise name + description for work segments
   const sequence = useMemo<Segment[]>(() => {
     const segs: Segment[] = [];
     for (let r = 0; r < day.rounds; r++) {
@@ -44,27 +44,26 @@ export default function Timer() {
   const [idx, setIdx] = useState(0);
   const seg = sequence[idx];
 
-  // When a segment completes, advance index and flag auto-start for the next one
+  // After a segment completes, move to the next and auto-start it
   const autoStartNextRef = useRef(false);
 
   const { remaining, running, start, pause, reset } = useTimer(
     seg.seconds,
     () => {
-      autoStartNextRef.current = true; // tell next segment to start automatically
-      setIdx((i) => Math.min(i + 1, sequence.length - 1));
+      autoStartNextRef.current = true;
+      setIdx(i => Math.min(i + 1, sequence.length - 1));
       if (navigator.vibrate) navigator.vibrate(150);
     }
   );
 
-  // Reset timer on segment change, and auto-start if the previous one just finished
+  // IMPORTANT: reset on *every* segment change (idx), not only when duration changes.
   useEffect(() => {
     reset(seg.seconds);
     if (autoStartNextRef.current) {
       start();
       autoStartNextRef.current = false;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seg.seconds]);
+  }, [idx]); // <— this is the key change
 
   const totalElapsed =
     sequence.slice(0, idx).reduce((a, s) => a + s.seconds, 0) +
@@ -84,7 +83,7 @@ export default function Timer() {
       : "text-amber-800 bg-amber-100 border-amber-200");
 
   function skip() {
-    setIdx((i) => Math.min(i + 1, sequence.length - 1));
+    setIdx(i => Math.min(i + 1, sequence.length - 1));
     pause();
   }
 
@@ -123,7 +122,7 @@ export default function Timer() {
           remaining={remaining}
           total={seg.seconds}
           phase={isWork ? "work" : "rest"}
-          size={240} // tweak if you want larger/smaller
+          size={240}
         />
       </div>
 
@@ -135,23 +134,20 @@ export default function Timer() {
         </div>
       </div>
 
-      {/* Controls tray */}
+      {/* Controls */}
       <div className="mx-auto w-full max-w-screen-md p-4 mt-2 grid grid-cols-1 gap-3">
-        {/* Primary control */}
         {running ? (
           <BigButton className="w-full" onClick={pause}>Pause</BigButton>
         ) : (
           <BigButton className="w-full" onClick={start}>Start</BigButton>
         )}
 
-        {/* Secondary row */}
         <div className="grid grid-cols-3 gap-3">
           <BigButton onClick={() => reset(seg.seconds)}>Reset</BigButton>
           <BigButton onClick={skip}>Skip</BigButton>
           <BigButton onClick={restartDay}>Restart</BigButton>
         </div>
 
-        {/* Completion action: only when final segment has finished */}
         {idx === sequence.length - 1 && remaining === 0 && (
           <BigButton className="w-full" onClick={finish}>
             Mark Done
