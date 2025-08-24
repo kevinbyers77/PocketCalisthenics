@@ -3,6 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  server: { host: true, port: 5173 },   // <- allow external access in Codespaces
-  preview: { host: true, port: 4173 }
+  base: "/PocketCalisthenics/",   // 👈 required for GitHub Pages
 });
