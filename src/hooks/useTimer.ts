@@ -1,32 +1,60 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useTimer(totalSeconds: number, onDone?: () => void) {
-  const [remaining, setRemaining] = useState(totalSeconds);
-  const [running, setRunning] = useState(false);
+  const [remaining, setRemaining] = useState<number>(Math.max(0, totalSeconds));
+  const [running, setRunning] = useState<boolean>(false);
   const idRef = useRef<number | null>(null);
 
-  useEffect(() => { setRemaining(totalSeconds); }, [totalSeconds]);
+  const clear = () => {
+    if (idRef.current !== null) {
+      clearInterval(idRef.current);
+      idRef.current = null;
+    }
+  };
 
-  useEffect(() => {
-    if (!running) { if (idRef.current) clearInterval(idRef.current); return; }
+  const startInterval = () => {
+    clear(); // ensure only one interval exists
     idRef.current = window.setInterval(() => {
-      setRemaining(s => {
+      setRemaining((s) => {
         if (s <= 1) {
-          if (idRef.current) clearInterval(idRef.current);
+          clear();
+          setRunning(false);
           onDone?.();
           return 0;
         }
         return s - 1;
       });
     }, 1000);
-    return () => { if (idRef.current) clearInterval(idRef.current); };
+  };
+
+  // Start/stop interval when running changes
+  useEffect(() => {
+    if (running) startInterval();
+    else clear();
+    return clear;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, onDone]);
+
+  // When totalSeconds changes (e.g., new segment), reset remaining
+  // and keep the timer running if it was already running.
+  useEffect(() => {
+    setRemaining(Math.max(0, totalSeconds));
+    if (running) startInterval();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalSeconds]);
+
+  // Cleanup on unmount
+  useEffect(() => clear, []);
 
   return {
     remaining,
     running,
     start: () => setRunning(true),
     pause: () => setRunning(false),
-    reset: (s = totalSeconds) => { setRunning(false); setRemaining(s); }
+    reset: (s = totalSeconds) => {
+      clear();
+      setRunning(false);
+      setRemaining(Math.max(0, s));
+    },
   };
 }
