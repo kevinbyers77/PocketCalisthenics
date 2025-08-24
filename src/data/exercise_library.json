@@ -1,5 +1,3 @@
-Workout app- exercise library JSON
-
 {
   "exercise_library": [
     {"id": "march_in_place", "name": "March in Place", "description": "Lift one knee at a time while swinging arms naturally."},
@@ -78,6 +76,5 @@ Workout app- exercise library JSON
     {"id": "step_touch_clap", "name": "Step Touch with Clap", "description": "Step side to side and clap hands lightly on each step."}
   ]
 }
-
 
 
