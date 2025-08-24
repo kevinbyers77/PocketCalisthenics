@@ -117,16 +117,16 @@ export default function Timer() {
         )}
       </div>
 
-    // Big timer (replace the old text-only timer)
-<div className="flex flex-1 items-center justify-center px-4">
-  <CircularTimer
-    remaining={remaining}
-    total={seg.seconds}
-    phase={isWork ? "work" : "rest"}
-    size={240} // tweak if you want larger/smaller
-  />
-</div>
-      
+      {/* Big timer (circular countdown) */}
+      <div className="flex flex-1 items-center justify-center px-4">
+        <CircularTimer
+          remaining={remaining}
+          total={seg.seconds}
+          phase={isWork ? "work" : "rest"}
+          size={240} // tweak if you want larger/smaller
+        />
+      </div>
+
       {/* Progress + segment info */}
       <div className="mx-auto w-full max-w-screen-md px-4">
         <ProgressBar value={totalElapsed} max={total} />
