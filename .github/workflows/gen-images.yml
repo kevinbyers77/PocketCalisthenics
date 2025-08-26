@@ -1,0 +1,42 @@
+name: Generate Exercise Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "How many to generate (e.g. 5). Leave blank for all."
+        required: false
+      only_ids:
+        description: "Comma-separated exercise ids to generate (overrides limit)."
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # so we can commit images back
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install OpenAI SDK
+        run: npm i openai@^4
+
+      - name: Generate images
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LIMIT: ${{ inputs.limit }}
+          ONLY_IDS: ${{ inputs.only_ids }}
+        run: node scripts/gen-exercise-images.mjs
+
+      - name: Commit & push images
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(images): generate exercise illustrations"
+          file_pattern: public/exercise-images/*.png
